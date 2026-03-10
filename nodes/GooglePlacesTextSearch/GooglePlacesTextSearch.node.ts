@@ -1,9 +1,10 @@
 import type {
+	IDataObject,
 	IExecuteFunctions,
+	IHttpRequestOptions,
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
-	IHttpRequestOptions,
 } from 'n8n-workflow';
 
 export class GooglePlacesTextSearch implements INodeType {
@@ -19,14 +20,13 @@ export class GooglePlacesTextSearch implements INodeType {
 		},
 		inputs: ['main'],
 		outputs: ['main'],
-		properties: [
+		credentials: [
 			{
-				displayName: 'API Key',
-				name: 'apiKey',
-				type: 'string',
-				default: '',
+				name: 'googlePlacesApi',
 				required: true,
 			},
+		],
+		properties: [
 			{
 				displayName: 'Text Query',
 				name: 'textQuery',
@@ -38,8 +38,8 @@ export class GooglePlacesTextSearch implements INodeType {
 				displayName: 'Field Mask',
 				name: 'fieldMask',
 				type: 'string',
-				default: 'places.displayName,places.formattedAddress',
-				description: 'Fields returned from the API',
+				default: 'places.displayName,places.formattedAddress,places.id',
+				required: true,
 			},
 		],
 	};
@@ -49,7 +49,6 @@ export class GooglePlacesTextSearch implements INodeType {
 		const returnData: INodeExecutionData[] = [];
 
 		for (let i = 0; i < items.length; i++) {
-			const apiKey = this.getNodeParameter('apiKey', i) as string;
 			const textQuery = this.getNodeParameter('textQuery', i) as string;
 			const fieldMask = this.getNodeParameter('fieldMask', i) as string;
 
@@ -58,7 +57,6 @@ export class GooglePlacesTextSearch implements INodeType {
 				url: 'https://places.googleapis.com/v1/places:searchText',
 				headers: {
 					'Content-Type': 'application/json',
-					'X-Goog-Api-Key': apiKey,
 					'X-Goog-FieldMask': fieldMask,
 				},
 				body: {
@@ -67,8 +65,13 @@ export class GooglePlacesTextSearch implements INodeType {
 				json: true,
 			};
 
-			const response = await this.helpers.httpRequest(options);
-			const places = response.places || [];
+			const response = await this.helpers.httpRequestWithAuthentication.call(
+				this,
+				'googlePlacesApi',
+				options,
+			);
+
+			const places = ((response as IDataObject).places || []) as IDataObject[];
 
 			for (const place of places) {
 				returnData.push({

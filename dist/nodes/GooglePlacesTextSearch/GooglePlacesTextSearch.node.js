@@ -15,14 +15,13 @@ class GooglePlacesTextSearch {
             },
             inputs: ['main'],
             outputs: ['main'],
-            properties: [
+            credentials: [
                 {
-                    displayName: 'API Key',
-                    name: 'apiKey',
-                    type: 'string',
-                    default: '',
+                    name: 'googlePlacesApi',
                     required: true,
                 },
+            ],
+            properties: [
                 {
                     displayName: 'Text Query',
                     name: 'textQuery',
@@ -34,8 +33,8 @@ class GooglePlacesTextSearch {
                     displayName: 'Field Mask',
                     name: 'fieldMask',
                     type: 'string',
-                    default: 'places.displayName,places.formattedAddress',
-                    description: 'Fields returned from the API',
+                    default: 'places.displayName,places.formattedAddress,places.id',
+                    required: true,
                 },
             ],
         };
@@ -44,7 +43,6 @@ class GooglePlacesTextSearch {
         const items = this.getInputData();
         const returnData = [];
         for (let i = 0; i < items.length; i++) {
-            const apiKey = this.getNodeParameter('apiKey', i);
             const textQuery = this.getNodeParameter('textQuery', i);
             const fieldMask = this.getNodeParameter('fieldMask', i);
             const options = {
@@ -52,7 +50,6 @@ class GooglePlacesTextSearch {
                 url: 'https://places.googleapis.com/v1/places:searchText',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-Goog-Api-Key': apiKey,
                     'X-Goog-FieldMask': fieldMask,
                 },
                 body: {
@@ -60,8 +57,8 @@ class GooglePlacesTextSearch {
                 },
                 json: true,
             };
-            const response = await this.helpers.httpRequest(options);
-            const places = response.places || [];
+            const response = await this.helpers.httpRequestWithAuthentication.call(this, 'googlePlacesApi', options);
+            const places = (response.places || []);
             for (const place of places) {
                 returnData.push({
                     json: place,

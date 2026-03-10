@@ -1,9 +1,8 @@
 {
     "name": "n8n-nodes-google-places-textsearch-stefan",
     "version": "0.1.0",
-    "description": "",
+    "description": "n8n community node for Google Places Text Search API",
     "license": "MIT",
-    "homepage": "",
     "keywords": [
         "n8n-community-node-package"
     ],
@@ -13,7 +12,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/<...>/n8n-nodes-<...>.git"
+        "url": "https://github.com/Stefanvr-hub/n8n-nodes-google-places-textsearch-stefan.git"
     },
     "scripts": {
         "build": "n8n-node build",
@@ -29,20 +28,15 @@
     ],
     "n8n": {
         "n8nNodesApiVersion": 1,
-        "strict": true,
-        "credentials": [],
+        "credentials": [
+            "dist/credentials/GooglePlacesApi.credentials.js"
+        ],
         "nodes": [
-            "dist/nodes/Example/Example.node.js"
+            "dist/nodes/GooglePlacesTextSearch/GooglePlacesTextSearch.node.js"
         ]
     },
     "devDependencies": {
         "@n8n/node-cli": "*",
-        "eslint": "9.32.0",
-        "prettier": "3.6.2",
-        "release-it": "^19.0.4",
-        "typescript": "5.9.2"
-    },
-    "peerDependencies": {
-        "n8n-workflow": "*"
+        "typescript": "*"
     }
 }
