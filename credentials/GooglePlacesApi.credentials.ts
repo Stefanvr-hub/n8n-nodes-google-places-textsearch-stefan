@@ -2,12 +2,18 @@ import type {
 	IAuthenticateGeneric,
 	ICredentialTestRequest,
 	ICredentialType,
+	Icon,
 	INodeProperties,
 } from 'n8n-workflow';
 
 export class GooglePlacesApi implements ICredentialType {
 	name = 'googlePlacesApi';
+
 	displayName = 'Google Places API';
+
+	documentationUrl = 'https://developers.google.com/maps/documentation/places/web-service/text-search';
+
+	icon: Icon = 'file:googlePlaces.svg';
 
 	properties: INodeProperties[] = [
 		{
@@ -33,15 +39,14 @@ export class GooglePlacesApi implements ICredentialType {
 
 	test: ICredentialTestRequest = {
 		request: {
-			method: 'POST',
 			baseURL: 'https://places.googleapis.com',
 			url: '/v1/places:searchText',
+			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json',
 				'X-Goog-FieldMask': 'places.id',
 			},
 			body: {
-				textQuery: 'coffee',
+				textQuery: 'Stockholm',
 			},
 		},
 	};

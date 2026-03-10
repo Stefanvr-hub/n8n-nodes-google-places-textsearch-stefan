@@ -5,6 +5,8 @@ class GooglePlacesApi {
     constructor() {
         this.name = 'googlePlacesApi';
         this.displayName = 'Google Places API';
+        this.documentationUrl = 'https://developers.google.com/maps/documentation/places/web-service/text-search';
+        this.icon = 'file:googlePlaces.svg';
         this.properties = [
             {
                 displayName: 'API Key',
@@ -27,15 +29,14 @@ class GooglePlacesApi {
         };
         this.test = {
             request: {
-                method: 'POST',
                 baseURL: 'https://places.googleapis.com',
                 url: '/v1/places:searchText',
+                method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'X-Goog-FieldMask': 'places.id',
                 },
                 body: {
-                    textQuery: 'coffee',
+                    textQuery: 'Stockholm',
                 },
             },
         };
